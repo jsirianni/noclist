@@ -4,9 +4,15 @@ import (
 	"fmt"
 	"os"
 
+	"noclist/noc"
+
 	"github.com/spf13/cobra"
 )
 
+// client object
+var nocClient noc.Noc
+
+// command line flags
 var file string
 var port string
 var host string
@@ -28,7 +34,21 @@ func Execute() {
 }
 
 func init() {
+	cobra.OnInitialize(initConfig)
+
 	rootCmd.PersistentFlags().StringVar(&host, "host", "localhost", "hostname or ip address of the target server")
-	rootCmd.PersistentFlags().StringVar(&port, "port", "port", "tcp port for the target server")
+	rootCmd.PersistentFlags().StringVar(&port, "port", "8888", "tcp port for the target server")
 	rootCmd.PersistentFlags().BoolVar(&tls, "tls", false, "enable tls")
+}
+
+func initConfig() {
+	// set the host address
+	nocClient.InitNoc(host, port, tls)
+
+	// aquire a token on startup
+	err := nocClient.SetAuth()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
+	}
 }
