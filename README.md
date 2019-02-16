@@ -5,9 +5,14 @@ Simple repository to practice GO and the Cobra CLI
 Noclist is developed with GO 1.10.4 on 64 bit Linux, however, any recent version should work.
 
 ### tests
+Start the server on port 8888
+```
+docker run --rm -p 8888:8888 adhocteam/noclist
+```
+
 Use GO's built in test suite:
 ```
-go test ./..
+GOCACHE=off go test ./...
 ```
 
 ### building
