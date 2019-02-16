@@ -31,6 +31,7 @@ func getUsers() {
 	j, err := users.ToJson()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
 	}
 	fmt.Println(string(j))
 }

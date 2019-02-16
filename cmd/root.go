@@ -28,7 +28,7 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
 }
@@ -42,13 +42,19 @@ func init() {
 }
 
 func initConfig() {
-	// set the host address
-	nocClient.InitNoc(host, port, tls)
+	var err error
 
-	// aquire a token on startup
-	err := nocClient.SetAuth()
+	// set the host address
+	err = nocClient.InitNoc(host, port, tls)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
+		os.Exit(1)
+	}
+
+	// aquire a token on startup
+	err = nocClient.SetAuth()
+	if err != nil {
+		// just exit, standard error already has the errors printed
 		os.Exit(1)
 	}
 }
